@@ -10,6 +10,13 @@ class Date {
         $this->date_info = getdate($this->date_time->getTimestamp());
     }
 
+    public function __toString() {
+        $year = $this->date_info['year'];
+        $month = (int) ($this->date_info['mon'] / 10)? $this->date_info['mon']: "0{$this->date_info['mon']}";
+        $day = (int) ($this->date_info['mday'] / 10)? $this->date_info['mday']: "0{$this->date_info['mday']}";
+        return "$year-$month-$day";
+    }
+
     public function getDay() {
         return $this->date_info['mday'];
     }
