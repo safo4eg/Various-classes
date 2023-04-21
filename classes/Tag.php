@@ -1,11 +1,30 @@
 <?php
+require_once('interfaces/iTag.php');
 
-class Tag {
+class Tag implements iTag {
     private $name;
     private $attrs;
+    private $text = '';
 
     public function __construct($name) {
         $this->name = $name;
+    }
+
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getText() {
+        return $this->text;
+    }
+
+    public function show() {
+        return $this->open().$this->text.$this->close();
+    }
+
+    public function setText($text) {
+        $this->text = $text;
+        return $this;
     }
 
     public function removeClass($class_name) {
@@ -37,10 +56,27 @@ class Tag {
         return $this;
     }
 
+    public function getAttr($name) {
+        if(isset($this->attrs[$name])) {
+            return $this->attrs[$name];
+        } else {
+            return null;
+        }
+    }
+
     public function setAttrs($attrs) {
         foreach($attrs as $name => $value) {
             $this->setAttr($name, $value);
         }
+        return $this;
+    }
+
+    public function getAttrs() {
+        return $this->attrs;
+    }
+
+    public function removeAttr($name) {
+        unset($this->attrs[$name]);
         return $this;
     }
 
