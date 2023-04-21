@@ -4,5 +4,5 @@
     require_once('classes/Tag.php');
 
     $tag = new Tag('input');
-    echo $tag->setAttrs(['id' => 'unique', 'class' => 'class1 class2', 'disabled' => true])->open();
+    echo $tag->addClass('class1')->addClass('class2')->removeClass('class2')->open();
     echo $tag->close();
