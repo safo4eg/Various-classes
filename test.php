@@ -3,6 +3,7 @@
     ini_set('display_errors', 'on');
     require_once('classes/form/Form.php');
     require_once('classes/form/Input.php');
+    require_once('classes/form/Submit.php');
 
     $form = new Form();
     $form->setAttrs(['action' => 'test.php', 'method' => 'POST']);
@@ -10,8 +11,7 @@
     $input_login = new Input();
     $input_login->setAttrs(['value' => 'login', 'name' => 'login']);
 
-    $input_submit = new Input();
-    $input_submit->setAttrs(['value' => 'Send', 'type' => 'submit']);
+    $input_submit = new Submit('Send');
 
     echo $form->open()."\r\n";
     echo $input_login."\r\n";
