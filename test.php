@@ -4,4 +4,5 @@
     require_once('classes/Tag.php');
 
     $tag = new Tag('div');
-    echo $tag->open()."text".$tag->close();
+    echo $tag->setAttr('id', 'unique')->setAttr('class', 'class1 class2')->open();
+    echo $tag->close();
