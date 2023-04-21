@@ -1,9 +1,11 @@
 <?php
 require_once('interfaces/iFile.php');
 class File implements iFile {
-    public $path;
+    private $path;
+    private $segments = [];
     public function __construct($file_path) {
         $this->path = $file_path;
+        $this->getPathSegments($file_path);
     }
 
     public function getPath() {
@@ -11,18 +13,15 @@ class File implements iFile {
     }
 
     public function getDir() {
-        preg_match('#.+(?<dir_name>\/.+\/)(?<file_name>.+\.(?<file_ext>.+))$#', $this->path, $match);
-        return $match['dir_name'];
+        return $this->segments['dir_name'];
     }
 
     public function getName() {
-        preg_match('#.+(?<dir_name>\/.+\/)(?<file_name>.+\.(?<file_ext>.+))$#', $this->path, $match);
-        return $match['file_name'];
+        return $this->segments['file_name'];
     }
 
     public function getExt() {
-        preg_match('#.+(?<dir_name>\/.+\/)(?<file_name>.+\.(?<file_ext>.+))$#', $this->path, $match);
-        return $match['file_ext'];
+        return $this->segments['ext'];
     }
 
     public function getSize() {
@@ -35,7 +34,7 @@ class File implements iFile {
     }
 
     public function setText($text) {
-        file_put_contents($this->path);
+        file_put_contents($this->path, $text);
     }
 
     public function appendText($text) {
@@ -52,15 +51,28 @@ class File implements iFile {
     }
 
     public function rename($new_name) {
-        preg_match('#.+(?<dir_name>\/.+\/)(?<file_name>.+\.(?<file_ext>.+))$#', $this->path, $match);
-        $file_name = $match['file_name'];
-        $new_path = preg_replace($file_name, $new_name, $this->path);
+        $new_path = str_replace($this->segments['file_name'].".".$this->segments['ext'], $new_name.".".$this->segments['ext'], $this->path);
         rename($this->path, $new_path);
         $this->path = $new_path;
+        $this->segments['file_name'] = $new_name;
     }
 
     public function replace($new_path) {
+        $new_path .= "{$this->segments['file_name']}.{$this->segments['ext']}";
         rename($this->path, $new_path);
         $this->path = $new_path;
+        $this->getPathSegments($new_path);
+    }
+
+    private function getPathSegments($file_path) {
+        preg_match(
+            '#^(?:\/?.+(?=(?:\/.+\/.+\..+)))?(?:\/?(?<dir_name>.+)\/)?(?:(?<file_name>.+)\.(?<ext>.+))$#',
+            $file_path,
+            $match
+        );
+
+        $this->segments['dir_name'] = $match['dir_name'];
+        $this->segments['file_name'] = $match['file_name'];
+        $this->segments['ext'] = $match['ext'];
     }
 }
