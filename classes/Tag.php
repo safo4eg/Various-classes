@@ -13,6 +13,13 @@ class Tag {
         return $this;
     }
 
+    public function setAttrs($attrs) {
+        foreach($attrs as $name => $value) {
+            $this->setAttr($name, $value);
+        }
+        return $this;
+    }
+
     public function open() {
         $name = $this->name;
         $attrs_str = $this->getAttrsStr($this->attrs);
